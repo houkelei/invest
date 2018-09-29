@@ -1,0 +1,39 @@
+.summarize-bg{
+	background-color: #f3f3ff;
+	padding-bottom: 40px;
+}
+
+.summarize-container{
+
+}
+
+.summarize-score{
+	font-size: 60px;
+	font-weight: bold;
+}
+
+.summarize-score-word{
+	font-size: 24px;
+}
+
+.summarize-invert-des{
+	font-size: 26px;
+	color: #5256a9;
+	font-weight: bold;
+}
+
+.summarize-level{
+	width: 140px;
+	height: 58px;
+	background-color: green;
+	font-size: 60px;
+	color: #000949;
+	line-height: 60px;
+	text-align: right;
+	padding-right: 30px;
+}
+.summarize-selectedimg{
+	position: relative;
+	left: -6px;
+	top:-66px;
+}

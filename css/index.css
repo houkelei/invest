@@ -1,0 +1,129 @@
+@font-face{
+	/*为引入的字体命名*/
+	font-family:simsun;
+	/*定义要引入字体文件的路径*/
+	src:url(../font/simsun.ttc);
+}
+
+@font-face{
+	/*为引入的字体命名*/
+	font-family:simhei;
+	/*定义要引入字体文件的路径*/
+	src:url(../font/simhei.ttf);
+}
+
+*{
+	font-family: 'simhei';
+}
+
+.vertical-bar{
+	width: 4px;
+	height: 30px;
+	background-color: #89b43b;
+	float: left;
+	margin-right: 10px;
+}
+
+.thead{
+	font-size: 20px;
+}
+
+.tbody{
+	font-size: 20px;
+	font-weight: bold;
+	background-color: rgba(0,0,0,0);
+}
+
+.charts-size{
+	width: 100%;
+	/*padding: 10%;*/
+}
+
+.plus{
+	color: #1eae14;
+}
+
+.minus{
+	color: #ed0e0e;
+}
+
+.analysis-bar{
+	height:296px;
+	text-align: left;
+	background-position:center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.analysis-symbol{
+	position: relative;
+	left:10px;
+	top:10px;
+}
+
+.analysis-title{
+	font-size: 24px;
+	line-height: 30px;
+	font-weight: bold;
+	color: white;
+	padding-top: 30px;
+	height: 180px;
+}
+
+.analysis-score{
+	font-size: 24px;
+	line-height: 24px;
+	font-weight: bold;
+	color: white;
+	padding-top: 20px;
+	text-align: right;
+	padding-right: 20px;
+}
+
+.analysis-score-v{
+	font-size: 30px;
+	color: white;
+}
+
+.analysis-score-a{
+	font-size: 14px;
+	position: relative;
+	left: 6px;
+	top:-2px;
+	color: white;
+}
+
+.bg-color-white{
+	background-color: #ffffff;
+	text-align: center;
+	padding-top: 20px;
+}
+
+.bg-color-green{
+	background-color: #f7fff6;
+	text-align: center;
+	padding-top: 20px;
+
+}
+
+/*
+==============================================================================================线条
+*/
+
+/*横向线条*/
+.hr-h{
+	width: 138px;
+	height: 2px;
+	background-color: #fadfd5;
+}
+
+/*
+==============================================================================================线条
+*/
+
+/*
+==============================================================================================进度条
+*/
+
+
+

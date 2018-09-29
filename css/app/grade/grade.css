@@ -1,0 +1,101 @@
+.grade-container{
+	width: 100%;
+	height: 238px;
+	padding-top: 40px;
+}
+.grade-title{
+	position: relative;
+	color: #ef7650;
+	font-weight:bold;
+	font-size: 24px;
+	width: 100%;
+	text-align: center;
+}
+.grade-column{
+
+}
+.grade-font{
+	color: #5256a9;
+	font-weight:bold;
+	font-size: 30px;
+	text-align: right;
+}
+.grade-score{
+	width: 290px;
+	height: 290px;
+	background-color: #5157a8;
+	text-align: center;
+	padding-top: 140px;
+	line-height: 26px;
+	float: right;
+	margin-right: 0px;
+}
+.grade-a-score{
+	font-size: 100px;
+	color: white;
+}
+.grade-a-word{
+	font-size: 20px;
+	color: white;
+}
+.grade-levelcontainer{
+	width: 290px;
+	height: 290px;
+	margin-left: 0px;
+}
+.grade-level{
+	width: 290px;
+	height: 58px;
+	background-color: green;
+	font-size: 60px;
+	color: #000949;
+	line-height: 60px;
+	text-align: right;
+	padding-right: 30px;
+}
+.grade-logobg{
+	position: relative;
+	top: 50px;
+	width: 100%;
+	height: 147px;
+	background-color:#a8aad3;
+	z-index: -1;
+}
+.grade-logo{
+	height:100%;
+}
+.grade-selectedimg{
+	position: relative;
+	left: -4px;
+	top:-67px;
+}
+.grade-footer{
+	text-align: center;
+}
+.grade-cover1{
+	width: 78px;
+	height: 82px;
+	position: relative;
+	left:50px;
+	top:60px;
+}
+.grade-cover2{
+	width: 98px;
+	height: 23px;
+	position: relative;
+	left:58px;
+	top:26px;
+}
+.grade-cover3{
+	width: 138px;
+	height: 20px;
+	position: relative;
+	left:-52px;
+	top:52px;
+}
+.grade-topBar{
+	width: 100%;
+	height: 100%;
+	/*background-repeat: repeat;*/
+}
+

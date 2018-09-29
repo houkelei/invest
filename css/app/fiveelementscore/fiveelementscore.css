@@ -1,0 +1,87 @@
+.fiveelementscore-bg{
+	background-color: #f3f3ff;
+	padding-bottom: 40px;
+}
+
+.fiveelementscore-container{
+}
+
+.fiveelementscore-title{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	background-size:307px 50px;
+	background-repeat: no-repeat;
+	background-position: center;
+	color: #4f56a6;
+	font-size: 26px;
+}
+
+.fiveelementscore-content{
+	width: 100%;
+	/*background-color: #000;*/
+}
+
+.fiveelementscore-key{
+	font-weight: bold;
+	color: #676767;
+	font-size: 24px;
+	float: left;
+	width: 112px;
+	height: 36px;
+	line-height: 36px;
+	text-align: right;
+}
+
+.fiveelementscore-bar-wide{
+	width: 450px;
+	float: left;
+	height: 36px;
+	line-height: 36px;
+}
+
+.fiveelementscore-bar{
+	height: 18px;
+	margin-top:9px;
+}
+
+.fiveelementscore-val{
+	font-weight: bold;
+	color: #676767;
+	font-size: 24px;
+	height: 36px;
+	line-height: 36px;
+	text-align: right;
+}
+
+.fiveelementscore-scale{
+
+}
+
+/*横向线条*/
+.fiveelementscore-hr-h{
+	width: 100%;
+	height: 1px;
+	background-color: #b7b9c5;
+	margin-top:16px;
+}
+
+/*竖向虚线*/
+.fiveelementscore-dashed-v{
+	position: relative;
+	width: 0px;
+	height: 195px;
+	border-right:1px dashed #b8bbc5;
+	left:6px;
+	top:-215px;
+	/*z-index: -1;*/
+}
+
+.fiveelementscore-scale-val{
+	height: 18px;
+	line-height: 18px;
+	color: #b7bac6;
+	text-align: left;
+	margin-left: -1px;
+}
