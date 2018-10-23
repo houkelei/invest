@@ -165,7 +165,7 @@ class trend extends Component{
         );
     }
 
-	render(){
+    render_back(){
 		if(!this.state.data.Cycles || !this.props.data.scores || !this.props.data.assessScore){
 			return <div></div>;
 		}
@@ -174,13 +174,34 @@ class trend extends Component{
 		let analysisResult = this.renderAnalysis();
 		this.props.onCollectTrend(this.score);
 		return (
-            <div className="bg-color-white" style={{display:"none"}}>
+            <div className="bg-color-white">
                 <div className="ui container risk-container">
 					<TabScore name="总结" value={this.score} />
 					<div className="charts-size">
 					   {renderChart}
                     </div>
 	      	    </div>
+	      	    {analysisResult}
+            </div>
+		);
+	}
+
+	render(){
+		if(!this.state.data.Cycles || !this.props.data.scores || !this.props.data.assessScore){
+			return <div></div>;
+		}
+		this.score = Common.sum(this.props.data.scores)+this.props.data.assessScore;
+		// let renderChart = this.renderChart();
+		let analysisResult = this.renderAnalysis();
+		analysisResult = this.props.data.analysisResult;
+		this.props.onCollectTrend(this.score);
+		let self = this;
+		setTimeout(function(){
+			$('#spTrendScore1').html(self.score);
+			$('#spTrendScore2').html(self.score);
+		},1)
+		return (
+            <div className="bg-color-white">
 	      	    {analysisResult}
             </div>
 		);

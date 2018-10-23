@@ -18,13 +18,13 @@ class risk extends Component{
 
 	constructor(props){
 		super(props);
-		this.weight = 10;
+		this.weight = this.props.data.Weights[4];
 		this.score = 0;
 		this.riskDiscountRate = 0;
 		this.assessDes = "";
-		this.liabilityWithInterestRateTrendRange = {0:{name:"降低",score:5,des:"经营风险大幅下降"},10:{name:"降低",score:4,des:"经营风险下降"},30:{name:"稳定",score:3,des:"经营风险可控"},50:{name:"上升",score:2,des:"经营风险提升"},999:{name:"上升",score:1,des:"经营风险大幅提升"}}; //+20
-		this.liabilityWithInterestRateRange = {5:{name:"无负债",score:5,des:"无财务风险"},30:{name:"低负债",score:4,des:"财务风险极低"},60:{name:"可控负债",score:3,des:"财务风险处于可控区间"},90:{name:"高负债",score:2,des:"财务方面具有风险"},999:{name:"风险负债",score:1,des:"财务风险高"}};
-		this.liabilityWithInterestRateScoreRange = {4:{name:"其它",score:12,des:"财务风险高"},6:{name:"5-6",score:11,des:"财务风险可控"},8:{name:"7-8",score:10,des:"财务风险低"},10:{name:"9-10",score:9,des:"财务风险极低"}};
+		this.liabilityWithInterestRateTrendRange = {0:{name:"降低",score:2,des:"经营风险大幅下降"},10:{name:"降低",score:1,des:"经营风险下降"},20:{name:"降低",score:0.5,des:"经营风险小幅下降"},40:{name:"上升",score:0,des:"经营风险提升"},999:{name:"上升",score:0,des:"经营风险大幅提升"}}; //+20
+		this.liabilityWithInterestRateRange = {5:{name:"无负债",score:8,des:"无财务风险"},30:{name:"低负债",score:6,des:"财务风险极低"},60:{name:"可控负债",score:4,des:"财务风险处于可控区间"},90:{name:"高负债",score:2,des:"财务方面具有风险"},999:{name:"风险负债",score:0,des:"财务风险高"}};
+		this.liabilityWithInterestRateScoreRange = {0:{name:"0",score:20,des:"财务风险极高"},2:{name:"1-2",score:16,des:"财务风险高"},4:{name:"3-4",score:14,des:"财务风险高"},6:{name:"5-6",score:11,des:"财务风险可控"},8:{name:"7-8",score:10,des:"财务风险低"},10:{name:"9-10",score:9,des:"财务风险极低"}};
 	}
 
 	//生成报表配置
@@ -133,7 +133,7 @@ class risk extends Component{
 	renderAnalysis(){
 		this.score = 0;
 		let liabilityWithInterestRate5 = this.getLiabilityWithInterestRate(5);
-		let rangeIndex = Common.getRange(this.liabilityWithInterestRateTrendRange, liabilityWithInterestRate5);
+		let rangeIndex = Common.getRange(this.liabilityWithInterestRateTrendRange, liabilityWithInterestRate5+20);
 		let liabilityWithInterestRateTrend = this.liabilityWithInterestRateTrendRange[rangeIndex];
 		this.score += liabilityWithInterestRateTrend.score;
 		liabilityWithInterestRate5=Math.abs(liabilityWithInterestRate5);
@@ -144,7 +144,8 @@ class risk extends Component{
     	rangeIndex = Common.getRange(this.liabilityWithInterestRateRange, liabilityWithInterestRate1);
 		let liabilityWithInterestRate = this.liabilityWithInterestRateRange[rangeIndex];
 		this.score += liabilityWithInterestRate.score;
-    	content += "，去年有息负债率"+liabilityWithInterestRate1+"%，"+liabilityWithInterestRate.des+"。从目前的有息负债率及趋势判断我们给予"+this.score+"分的加权评分！"
+		let convertScore = Common.convertToPercent(this.score,this.weight,2);
+    	content += "，去年有息负债率"+liabilityWithInterestRate1+"%，"+liabilityWithInterestRate.des+"。从目前的有息负债率及趋势判断我们给予"+convertScore+"分的评分！"
         //风险贴现率
 		rangeIndex = Common.getRange(this.liabilityWithInterestRateScoreRange,this.score,0);
 		this.riskDiscountRate = this.liabilityWithInterestRateScoreRange[rangeIndex].score;
@@ -157,7 +158,7 @@ class risk extends Component{
                 <div className="ui container">
                     <img src={quotes} className="analysis-symbol" alt="" />
                     <div className="analysis-title">风险解析:<br />{content}</div>
-                    <div className="analysis-score">评分:<span className="analysis-score-v">{this.score}</span><span className="analysis-score-a">分</span></div>
+                    <div className="analysis-score">评分:<span className="analysis-score-v">{convertScore}</span><span className="analysis-score-a">分</span></div>
                 </div>
             </div>
         );
@@ -167,11 +168,12 @@ class risk extends Component{
         this.assessDes = "";
 		let renderChart = this.renderChart();
 		let analysisResult = this.renderAnalysis();
-		this.props.onCollectInfo(this.score,Common.convertToPercent(this.score,this.weight,2),{riskDiscountRate:this.riskDiscountRate,des_risk:this.assessDes});
+		let convertScore = Common.convertToPercent(this.score,this.weight,2);
+		this.props.onCollectInfo(this.score,convertScore,{riskDiscountRate:this.riskDiscountRate,des_risk:this.assessDes});
 		return (
             <div className="bg-color-white">
                 <div className="ui container risk-container">
-					<TabScore name="风险" value={this.score} type="risk" />
+					<TabScore name="风险" value={convertScore} type="risk" />
 					<div className="charts-size">
 					   {renderChart}
                     </div>

@@ -18,7 +18,7 @@ class growthspeed extends Component{
 
 	constructor(props){ 
 		super(props);
-        this.weight = 15;
+        this.weight = this.props.data.Weights[1];
         this.score = 0;
         this.assessDes = "";
         this.growthYears = [5,2,1];
@@ -59,7 +59,7 @@ class growthspeed extends Component{
             yAxis: [{ // Primary yAxis
                 min: -40,
                 title: {
-                    text: '增长率',
+                    text: '',
                     style: {
                         color: "#3a3a3f",
                     }
@@ -72,7 +72,7 @@ class growthspeed extends Component{
                 }
             }, { // Secondary yAxis
                 title: {
-                    text: '归母净利润 (亿)',
+                    text: '',
                     style: {
                         color: "#70ace9",
                     }
@@ -102,10 +102,10 @@ class growthspeed extends Component{
                 }
             },
             series: [{
-                name: '归母净利润',
+                name: '净利润',
                 type: 'column',
                 yAxis: 1,
-                data: this.props.data.GMNetMargins,
+                data: this.props.data.NetMargins,
                 tooltip: {
                     valueSuffix: '亿'
                 }
@@ -113,7 +113,7 @@ class growthspeed extends Component{
             }, {
                 name: '增长率',
                 type: 'line',
-                data: this.props.data.GMNetMarginGrowthRates,
+                data: this.props.data.NetMarginGrowthRates,
                 tooltip: {
                     valueSuffix: '%'
                 }
@@ -181,26 +181,26 @@ class growthspeed extends Component{
 
     //获取近几年净利润复合增长
     getCompoundGrowth(years){
-        var gmNetMargins = this.props.data.GMNetMargins;
-        var y = gmNetMargins.length;
-        var v = ((Math.pow((gmNetMargins[y-1]/gmNetMargins[y-1-years]),1/years)-1)*100).toFixed(2);
+        var SixYearNetMargins = this.props.data.SixYearNetMargins;
+        var y = SixYearNetMargins.length;
+        var v = ((Math.pow((SixYearNetMargins[y-1]/SixYearNetMargins[y-1-years]),1/years)-1)*100).toFixed(2);
         return parseFloat(v);
     }
 
     //获取近几年归母净利润波动率
     getVolatilityRateAvg(years){
         if(!years){
-            years = this.props.data.GMNetMarginVolatilitys.length;
+            years = this.props.data.NetMarginVolatilitys.length;
         }
         let self = this;
         let res = 0;
         let i = 0;
-        this.props.data.GMNetMarginVolatilitys.forEach(function(gmNetMarginVolatility,index){
+        this.props.data.NetMarginVolatilitys.forEach(function(netMarginVolatility,index){
             i++;
-            if(i<=self.props.data.GMNetMarginVolatilitys.length-years){
+            if(i<=self.props.data.NetMarginVolatilitys.length-years){
                 return
             }
-            res += gmNetMarginVolatility;
+            res += netMarginVolatility;
         });
         res=res/years;
         res=res.toFixed(2);
@@ -216,9 +216,18 @@ class growthspeed extends Component{
         let rangeIndex = 0;
         let rangeIndexA = Common.getRange(this.netMarginGrowthRange, compoundGrowth5);
         let rangeIndexB = Common.getRange(this.netMarginGrowthRange, compoundGrowth2);
+        if(rangeIndexB>=50){
+            if(rangeIndexB>50){
+                this.futureNetMarginGrowth=50
+            }else{
+                this.futureNetMarginGrowth=30
+            }
+        }else{
+            this.futureNetMarginGrowth = Common.getMiddleValue(this.netMarginGrowthRange,rangeIndexB);
+        }
         //未来3年净利润增速
-        this.futureNetMarginGrowth = Common.getMiddleValue(this.netMarginGrowthRange,rangeIndexB);
         rangeIndex = rangeIndexA===rangeIndexB?rangeIndexA:rangeIndexB;
+        let futureGrowthRange = this.netMarginGrowthRange[rangeIndexB].name;
         this.score += this.netMarginGrowthRange[rangeIndex].score*this.weights[0]/100;
         let des = "";
         if(rangeIndexA===rangeIndexB){
@@ -230,26 +239,31 @@ class growthspeed extends Component{
         //评估描述
         this.assessDes += des;
         this.assessDes += "以"+this.netMarginGrowthRange[rangeIndexB].name+"区间为样本，";
-        this.assessDes += "我们取中间值"+this.futureNetMarginGrowth+"%作为未来3年的净利润增速。";
+        if(this.futureNetMarginGrowth>=30){
+            this.assessDes += "我们取"+this.futureNetMarginGrowth+"%作为未来3年的净利润增速。";
+        }else{
+            this.assessDes += "我们取中间值"+this.futureNetMarginGrowth+"%作为未来3年的净利润增速。";
+        }
         let volatilityRateAvg5 = this.getVolatilityRateAvg(5);
         let volatilityRateAvg2 = this.getVolatilityRateAvg(2);
         rangeIndexA = Common.getRange(this.netMarginVolatilityRange, volatilityRateAvg5);
         rangeIndexB = Common.getRange(this.netMarginVolatilityRange, volatilityRateAvg2);
         rangeIndex = rangeIndexA===rangeIndexB?rangeIndexA:rangeIndexB;
         this.score += this.netMarginVolatilityRange[rangeIndex].score*this.weights[1]/100
+        let convertScore = Common.convertToPercent(this.score,this.weight,2);
         if(rangeIndexA===rangeIndexB){
             content += "净利润增速保持"+this.netMarginVolatilityRange[rangeIndex].name;
         }else{
             content += "净利润增速由"+this.netMarginVolatilityRange[rangeIndexA].name+"切换为"+this.netMarginVolatilityRange[rangeIndexB].name;
         }
         content += "，"+this.netMarginVolatilityRange[rangeIndex].des;
-        content += "。以"+this.netMarginVolatilityRange[rangeIndexB].name+"作为未来的增长区间，我们给予"+this.score+"分的加权评分。";
+        content += "。以"+futureGrowthRange+"作为未来的增长区间，我们给予"+convertScore+"分的评分。";
         return (
             <div className="analysis-bar" style={{backgroundImage:"url("+greenBar+")"}}>
                 <div className="ui container">
                     <img src={quotes} className="analysis-bsymbol" alt="" />
                     <div className="analysis-title">增长速度解析:<br />{content}</div>
-                    <div className="analysis-score">评分:<span className="analysis-score-v">{this.score}</span><span className="analysis-score-a">分</span></div>
+                    <div className="analysis-score">评分:<span className="analysis-score-v">{convertScore}</span><span className="analysis-score-a">分</span></div>
                 </div>
             </div>
         );
@@ -260,12 +274,13 @@ class growthspeed extends Component{
         // let renderTable = this.renderTable();
         let renderChart = this.renderChart();
         let analysisResult = this.renderAnalysis();
-        this.props.onCollectInfo(this.score,Common.convertToPercent(this.score,this.weight,2),{futureNetMarginGrowth:this.futureNetMarginGrowth,des_growthSpeed:this.assessDes});
+        let convertScore = Common.convertToPercent(this.score,this.weight,2);
+        this.props.onCollectInfo(this.score,convertScore,{futureNetMarginGrowth:this.futureNetMarginGrowth,des_growthSpeed:this.assessDes});
 		return (
             <div className="bg-color-green">
-                <br /><br />
+                <br /><br /><br />
                 <div className="ui container">
-					<TabScore name="增长速度" value={this.score} type="growthspeed" />
+					<TabScore name="增长速度" value={convertScore} type="growthspeed" />
                     <div className="charts-size">
 					   {renderChart}
                     </div>

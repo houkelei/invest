@@ -50,9 +50,8 @@ class summarize extends Component{
 			},
 			title: {
 				floating:true,
-				text: "<span class='summarize-score' style='color:#5b5879;'>"+this.state.lastScore+"<br></span><span class='summarize-score-word' style='color:#5b5879'> 加权总分</span>",
-				y:170,
-				x:-13
+				text: "<span class='summarize-score' style='color:#5b5879;'>"+this.state.lastScore+"<br></span><span class='summarize-score-word' style='color:#5b5879'>加权总分</span>",
+				y:154,
 			},
 			tooltip: {
 				pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

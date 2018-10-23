@@ -34,36 +34,35 @@ class fiveelementscore extends Component{
 					<br/>
 					<div className="fiveelementscore-content">
 						<div className="ui column grid">
-						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长速度</div>
+							<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长空间</div>
 						  	<div className="ten wide column fiveelementscore-bar-wide" style={{paddingLeft:"0px",paddingRight:"0px"}}>
 						  		<div className="fiveelementscore-bar" style={{width:scores[0]+"%",backgroundColor:(parseInt(scores[0],10)>=50?"#50dc73":"#ef7750")}}></div>
 						  	</div>
 						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[0],10)>=50?"#78e395":"#676767")}}>{scores[0]}分</div>
 
-						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长效率</div>
+						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长速度</div>
 						  	<div className="ten wide column fiveelementscore-bar-wide" style={{paddingLeft:"0px",paddingRight:"0px"}}>
 						  		<div className="fiveelementscore-bar" style={{width:scores[1]+"%",backgroundColor:(parseInt(scores[1],10)>=50?"#50dc73":"#ef7750")}}></div>
 						  	</div>
-						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[1],10)>=50?"#78e395":"#676767")}} >{scores[1]}分</div>
+						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[1],10)>=50?"#78e395":"#676767")}}>{scores[1]}分</div>
 
-						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>ROE</div>
+						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长效率</div>
 						  	<div className="ten wide column fiveelementscore-bar-wide" style={{paddingLeft:"0px",paddingRight:"0px"}}>
 						  		<div className="fiveelementscore-bar" style={{width:scores[2]+"%",backgroundColor:(parseInt(scores[2],10)>=50?"#50dc73":"#ef7750")}}></div>
 						  	</div>
 						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[2],10)>=50?"#78e395":"#676767")}} >{scores[2]}分</div>
 
-						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>风险</div>
+						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>ROE</div>
 						  	<div className="ten wide column fiveelementscore-bar-wide" style={{paddingLeft:"0px",paddingRight:"0px"}}>
 						  		<div className="fiveelementscore-bar" style={{width:scores[3]+"%",backgroundColor:(parseInt(scores[3],10)>=50?"#50dc73":"#ef7750")}}></div>
 						  	</div>
 						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[3],10)>=50?"#78e395":"#676767")}} >{scores[3]}分</div>
 
-						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>增长空间</div>
+						  	<div className="three wide column fiveelementscore-key" style={{paddingLeft:"5px"}}>风险</div>
 						  	<div className="ten wide column fiveelementscore-bar-wide" style={{paddingLeft:"0px",paddingRight:"0px"}}>
 						  		<div className="fiveelementscore-bar" style={{width:scores[4]+"%",backgroundColor:(parseInt(scores[4],10)>=50?"#50dc73":"#ef7750")}}></div>
 						  	</div>
-						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[4],10)>=50?"#78e395":"#676767")}}>{scores[4]}分</div>
-
+						  	<div className="three wide column fiveelementscore-val" style={{color:(parseInt(scores[4],10)>=50?"#78e395":"#676767")}} >{scores[4]}分</div>
 
 						  	<div className="three wide column" style={{padding:"0px"}}></div>
 						  	<div className="ten wide column fiveelementscore-scale" style={{padding:"0px"}}>

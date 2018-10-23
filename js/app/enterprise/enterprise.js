@@ -23,7 +23,7 @@ class enterprise extends Component{
 
 	componentWillMount() {
 		let url = config.getWebUrl();
-		let enterpriseID = 2;
+		let enterpriseID = this.props.data.enterpriseid;
 		let args = {
             mode:'Enterprise',
             func:'ShowEnterprise',
@@ -156,15 +156,15 @@ class enterprise extends Component{
 				    		</div>
 				    		<div className="enterprise-info">
 				    			<div className="enterprise-key">·所属行业:</div><div className="enterprise-value">{this.state.data.theirTrade}</div>
-				    			<div className="enterprise-key">·总股本:</div><div className="enterprise-value">{this.state.data.TotalEquity}</div>
-				    			<div className="enterprise-key">·当前股价:</div><div className="enterprise-value">{this.state.data.shares}</div>
-				    			<div className="enterprise-key">·总市值:</div><div className="enterprise-value">{this.state.data.marketValue}</div>
+				    			<div className="enterprise-key">·总股本:</div><div className="enterprise-value">{this.state.data.TotalEquity}亿</div>
+				    			<div className="enterprise-key">·当前股价:</div><div className="enterprise-value">{this.state.data.shares}元</div>
+				    			<div className="enterprise-key">·总市值:</div><div className="enterprise-value">{this.state.data.marketValue}亿</div>
 				    			<div className="enterprise-key">·当前日期:</div><div className="enterprise-value">{this.state.data.nowTime}</div>
 				    		</div>
 						</div>
 						<div className="eight wide column" style={{"paddingLeft":"0px"}}>
 							<div className="enterprise-constitute" style={{backgroundImage:"url("+constitute+")"}}>
-								<div className="enterprise-constitute-title">——主营构成——</div>
+								<div className="enterprise-constitute-title"><span style={{fontWeight:"bold"}}>——主营构成——</span></div>
 								<br />
 								{
 									this.state.data.constitute.map((item,i)=>(
@@ -185,7 +185,8 @@ class enterprise extends Component{
 	render(){
 		let data = {
 			weights:this.state.data.Weights,
-			stockName:this.state.data.stockName
+			stockName:this.state.data.stockName,
+			shares:this.state.data.shares
 		}
 		this.props.onCollectEnterprise(data);
 		return (

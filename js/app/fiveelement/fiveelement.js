@@ -27,7 +27,7 @@ class fiveelement extends Component{
 
 	componentWillMount() {
 		let url = config.getWebUrl();
-		let enterpriseID = 2;
+		let enterpriseID = this.props.data.enterpriseid;
 		let args = {
             mode:'Profitability',
             func:'ShowProfitability',
@@ -50,41 +50,50 @@ class fiveelement extends Component{
 		//数组
 		let Years=[],GMNetMargins=[],GMNetMarginGrowthRates=[],ROES=[],TotalAssetGrowthRates=[];
 		let NetAssetGrowthRates=[],OpenIncomeGrowthRates=[],NetMargins=[],NetMarginGrowthRates=[],ManageCashNetAmounts=[];
-		let InvestCashNetAmounts=[],FinancingAmounts=[],NetAssets=[],LiabilityWithInterestRates=[],GMNetMarginVolatilitys=[];
+		let InvestCashNetAmounts=[],FinancingAmounts=[],NetAssets=[],LiabilityWithInterestRates=[],NetMarginVolatilitys=[];
 		let ROEVolatilitys=[],InvestGates=[];
-		rows.forEach(function(rowStr){
+		let SixYearNetMargins=[];
+		rows.forEach(function(rowStr,i){
 			let row = rowStr.split("|");
-			Years.push(parseInt(row[0],10));
-			GMNetMargins.push(parseFloat(row[1],10));
-			GMNetMarginGrowthRates.push(parseFloat(row[2],10));
-			ROES.push(parseFloat(row[3],10));	
-			TotalAssetGrowthRates.push(parseFloat(row[4],10));
+			if(i>0){
+				Years.push(parseInt(row[0],10));
+				GMNetMargins.push(parseFloat(row[1],10));
+				ROES.push(parseFloat(row[2],10));	
 
-			NetAssetGrowthRates.push(parseFloat(row[5],10));
-			OpenIncomeGrowthRates.push(parseFloat(row[6],10));
-			NetMargins.push(parseFloat(row[7],10));
-			NetMarginGrowthRates.push(parseFloat(row[8],10));
-			ManageCashNetAmounts.push(parseFloat(row[9],10));
+				NetMargins.push(parseFloat(row[3],10));
+				ManageCashNetAmounts.push(parseFloat(row[4],10));
+				InvestCashNetAmounts.push(parseFloat(row[5],10));
 
-			InvestCashNetAmounts.push(parseFloat(row[10],10))
-			FinancingAmounts.push(parseFloat(row[11],10));
-			NetAssets.push(parseFloat(row[12],10));
-			LiabilityWithInterestRates.push(parseFloat(row[13],10));
-			GMNetMarginVolatilitys.push(parseFloat(row[14],10));
+				FinancingAmounts.push(parseFloat(row[6],10));
+				NetAssets.push(parseFloat(row[7],10));
+				LiabilityWithInterestRates.push(parseFloat(row[8],10));
+				NetMarginVolatilitys.push(parseFloat(row[9],10));
+				ROEVolatilitys.push(parseFloat(row[10],10));
 
-			ROEVolatilitys.push(parseFloat(row[15],10));
-			InvestGates.push(parseFloat(row[16],10));
+				InvestGates.push(parseFloat(row[11],10));
+				GMNetMarginGrowthRates.push(parseFloat(row[12],10));
+				TotalAssetGrowthRates.push(parseFloat(row[13],10));
+				NetAssetGrowthRates.push(parseFloat(row[14],10));
+				OpenIncomeGrowthRates.push(parseFloat(row[15],10));
+				NetMarginGrowthRates.push(parseFloat(row[16],10));
+			}
+			SixYearNetMargins.push(parseFloat(row[3],10));
 		});
 		this.setState({
 			data:{
+				enterpriseID:this.props.data.enterpriseid,
 				InvestCount:data.InvestCount,
+				GrowthSpaceAnalysis:data.GrowthSpaceAnalysis,
+				GrowthSpaceScore:data.GrowthSpaceScore,
 				GrowthSpacePremium:data.GrowthSpacePremium,
 				GrowthEfficiencyPremium:data.GrowthEfficiencyPremium,
+				SpaceEfficiencyDes:data.SpaceEfficiencyDes,
+
 				CurrentPriceToBook:data.CurrentPriceToBook,
 				Years:Years,
 				GMNetMargins:GMNetMargins,
 				GMNetMarginGrowthRates:GMNetMarginGrowthRates,
-				GMNetMarginVolatilitys:GMNetMarginVolatilitys,
+				NetMarginVolatilitys:NetMarginVolatilitys,
 				ROES:ROES,
 				ROEVolatilitys:ROEVolatilitys,
 				TotalAssetGrowthRates:TotalAssetGrowthRates,
@@ -97,7 +106,10 @@ class fiveelement extends Component{
 				InvestGates:InvestGates,
 				FinancingAmounts:FinancingAmounts,
 				NetAssets:NetAssets,
-				LiabilityWithInterestRates:LiabilityWithInterestRates
+				LiabilityWithInterestRates:LiabilityWithInterestRates,
+				mode:this.props.data.mode,
+				SixYearNetMargins:SixYearNetMargins,
+				Weights:this.props.data.weights.split("$")
 			}
 		});
 	}
@@ -107,7 +119,7 @@ class fiveelement extends Component{
 		this.scoreTrims.push(scoreTrim);
 		Common.mergeJsonData(this.info,specificInfo);
 		if(this.scores.length>=5){
-			Common.mergeJsonData(this.info,{currentPriceToBook:this.state.data.CurrentPriceToBook});
+			Common.mergeJsonData(this.info,{currentPriceToBook:this.state.data.CurrentPriceToBook,enterpriseID:this.props.data.enterpriseid});
 			this.props.onCollectFiveElement(this.scores,this.scoreTrims,this.info);
 		}
 	}
@@ -118,11 +130,11 @@ class fiveelement extends Component{
         this.info = {};
 		return (
 			<div>
+				<GrowthSpace data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
 				<GrowthSpeed data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
 				<GrowthEfficiency data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
 				<Roe data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
 				<Risk data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
-				<GrowthSpace data={this.state.data} onCollectInfo={this.onCollectInfo.bind(this)} />
 			</div>
 		);
 	}

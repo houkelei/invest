@@ -4,7 +4,9 @@
 
 import React, { Component } from 'react';
 import Highcharts from 'react-highcharts';
+import $ from 'jquery';
 
+import config from '@/js/config/config';
 import Common from '@/js/utils/common';
 import TabScore from '@/js/component/tab/score';
 import Block from '@/js/component/block';
@@ -40,10 +42,7 @@ class assess extends Component{
 				type: 'column'
 			},
 			title: {
-				text: '评分'
-			},
-			subtitle: {
-				text: '数据来源: leo.com'
+				text: ''
 			},
 			xAxis: {
 				categories: this.elements,
@@ -157,7 +156,7 @@ class assess extends Component{
     		<Block lineNumber='2' bgColor='ffe4ce'>
                 {relativeDiscount>0?"相对折价":"相对溢价"}
     			<br/>
-				{relativeDiscount}%
+				{Math.abs(relativeDiscount)}%
     		</Block>
     	);
     }
@@ -189,30 +188,98 @@ class assess extends Component{
     	);
     }
 
+    //保存
+    save(){
+        let url = config.getWebUrl();
+        let content = this.props.data.info.enterpriseID+","+$('#txtSpaceEfficiency').val()+","+$('#txtSpacePremium').val()+","+$('#txtEfficiencyPremium').val();
+        let args = {
+            mode:'Enterprise',
+            func:'UpdateAssess',
+            args:content
+        };
+        $.ajax({ 
+            type : "post",
+            url : url,
+            data : args,
+            async : false,
+            success : function(data){
+                if(data.Status==="200"){
+                    window.location.reload()
+                }
+            } 
+        });
+    }
+
     //分析结果
 	renderAnalysis(){
         this.score = 0;
         let content = this.props.data.info.des_growthSpeed;
         content += this.props.data.info.des_roe;
         content += this.props.data.info.des_risk;
-        content += "公司目前处于行业龙头地位，属于稳健成长型，给予行业龙头10%的溢价，";
-        content += "经营性现金流相对净利润非常充足，投资性现金流处于较低区间，增长效率稳定，给予5%的溢价，";
-        content += "依据简化估值模型，合理市净率应为"+this.rationalPriceToBook+"倍，";
         let rangeIndex = Common.getRange(this.relativeDiscountRange,this.relativeDiscount/100*10+5);
-        content += this.relativeDiscount>0?"相对折价":"相对溢价";
-        content += this.relativeDiscount+"%，股价"+this.relativeDiscountRange[rangeIndex].name+"！";
         this.score = this.relativeDiscountRange[rangeIndex].score;
-        content += "我们给予"+this.score+"分的加权评分。";
         this.assessDes = this.relativeDiscountRange[rangeIndex].name;
-        return (
-            <div className="analysis-bar" style={{backgroundImage:"url("+orangeBar+")",height:"450px"}}>
-                <div className="ui container">
-                    <img src={quotes} className="analysis-symbol" alt="" />
-                    <div className="analysis-title">估值解析:<br />{content}</div>
-                    <div className="analysis-score" style={{paddingTop:"176px"}}>评分:<span className="analysis-score-v">{this.score}</span><span className="analysis-score-a">分</span></div>
+        let spaceEfficiencyDes = this.props.data.info.spaceEfficiencyDes;
+        if(this.props.data.mode==="E"){
+            let growthSpacePremium  = this.props.data.info.growthSpacePremium;
+            let growthEfficiencyPremium  = this.props.data.info.growthEfficiencyPremium;
+            return (
+                <div className="analysis-bar" style={{backgroundImage:"url("+orangeBar+")",height:"450px"}}>
+                    <div className="ui container">
+                        <div className="ui grid assess-grid">
+                            <div className="three wide column" style={{paddingRight:"0px"}}>
+                                空间效率:
+                            </div>
+                            <div className="thirteen wide column">
+                                <textarea id="txtSpaceEfficiency" style={{width:"470px",height:"120px"}} defaultValue={spaceEfficiencyDes}></textarea>
+                            </div>
+                            <div className="three wide column">
+                                空间溢价:
+                            </div>
+                            <div className="five wide column">
+                                <textarea id="txtSpacePremium" style={{width:"100px",height:"34px"}} defaultValue={growthSpacePremium}></textarea>%
+                            </div>
+                            <div className="three wide column">
+                                效率溢价:
+                            </div>
+                            <div className="five wide column">
+                                <textarea id="txtEfficiencyPremium" style={{width:"100px",height:"34px"}} defaultValue={growthEfficiencyPremium}></textarea>%
+                            </div>
+                            <div className="three wide column">
+                            </div>
+                            <div className="thirteen wide column">
+                                <input type="button" value="保存" onClick={this.save.bind(this)} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }else{
+            content += spaceEfficiencyDes;
+            content += "依据简化估值模型，合理市净率应为"+this.rationalPriceToBook+"倍，";
+            content += "相对当前"+this.props.data.info.currentPriceToBook+"倍市净率"
+            // content += this.relativeDiscount>0?"折价":"溢价";
+            content += "潜在"+(this.relativeDiscount>0?"上涨":"下跌")+"空间";
+            content += Math.abs(this.relativeDiscount)+"%，当前股价"+this.relativeDiscountRange[rangeIndex].name+"！";
+            let rationalShares = this.rationalPriceToBook/this.props.data.info.currentPriceToBook*this.props.data.shares
+            rationalShares = rationalShares.toFixed(2);
+            let leftV = rationalShares*0.95
+            leftV = leftV.toFixed(2)
+            let rightV = rationalShares*1.05
+            rightV = rightV.toFixed(2)
+            content += "合理股价应在"+leftV+"-"+rightV+"区间。";
+            let convertScore = Common.convertToPercent(this.score,this.weight,2);
+            // content += "我们给予"+convertScore+"分的评分。";
+            return (
+                <div className="analysis-bar" style={{backgroundImage:"url("+orangeBar+")",height:"450px"}}>
+                    <div className="ui container">
+                        <img src={quotes} className="analysis-symbol" alt="" />
+                        <div className="analysis-title">总结:<br />{content}我们给予<span id="spTrendScore1">{convertScore}</span>分的评分。</div>
+                        <div className="analysis-score" style={{paddingTop:"176px"}}>评分:<span id="spTrendScore2" className="analysis-score-v">{convertScore}</span><span className="analysis-score-a">分</span></div>
+                    </div>
+                </div>
+            );
+        }
     }
 	
 	render(){
@@ -222,18 +289,18 @@ class assess extends Component{
 		let renderChart = this.renderChart();
 		let description = this.description();
 		let analysisResult = this.renderAnalysis();
-        this.props.onCollectAssess(this.score,this.assessDes);
+        this.props.onCollectAssess(this.score,this.assessDes,analysisResult);
+        let convertScore = Common.convertToPercent(this.score,this.weight,2);
 		return (
             <div className="bg-color-white">
                 <div className="ui container">
-					<TabScore name="估值" value={this.score} type="assess" />
+					<TabScore name="估值" value={convertScore} type="assess" />
 					<div className="charts-size">
                        {renderChart}
                     </div>
 					{description}
 	      	    </div>
 	      	    <br />
-	      	    {analysisResult}
             </div>
 		);
 	}

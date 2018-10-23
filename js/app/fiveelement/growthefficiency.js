@@ -19,13 +19,13 @@ class growthefficiency extends Component{
 
 	constructor(props){
 		super(props);
-		this.weight = 10;
+		this.weight = this.props.data.Weights[2];
 		this.investRetributionGateAvg = 0;
 		this.manageQualityAvg = 0;
 		this.boundaryInvestRetributionGateAvg = 0;
 		this.score = 0;
 		this.investRateRange = {0:{name:"过度",score:0,des:"投入资本过高，存在风险"},25:{name:"稳健",score:0,des:"稳步扩张"},9999:{name:"不足",score:0,des:"投入资本不足"}}; //*10,+20
-		this.manageQualityRange = {10:{name:"不足",score:2},15:{name:"充足",score:4},9999:{name:"非常充足",score:5}}; //*10
+		this.manageQualityRange = {10:{name:"不足",score:1},15:{name:"充足",score:3},9999:{name:"非常充足",score:5}}; //*10
 		this.boundaryInvestRetributionGateRange = {0:{name:"无收益",score:1,des:"无盈利能力"},10:{name:"低收益",score:2,des:"盈利能力低"},20:{name:"中收益",score:3,des:"盈利能力良好"},30:{name:"中高收益",score:4,des:"盈利能力强"},999:{name:"高收益",score:5,des:"盈利能力极强"}};
 		this.financingRatioRange = {3:{name:"极低",score:1,des:"净资产通过利润积累，经营业务可续性强"},10:{name:"很低",score:2,des:"净资产通过利润积累，经营业务可续性强"},30:{name:"低",score:3,des:"净资产通过利润积累，需少量筹资获取资金"},60:{name:"过高",score:4,des:"现金流质量有一定水分，净资产质量一般"},999:{name:"很高",score:5,des:"现金流不足，净资产质量不足"}};
 	}
@@ -132,7 +132,7 @@ class growthefficiency extends Component{
     		this.props.data.NetMarginGrowthRates.forEach(function(netMarginGrowthRate,index){
 	    		netMarginGrowthRateAvg+=netMarginGrowthRate;
 	    	});
-	    	netMarginGrowthRateAvg=netMarginGrowthRateAvg/(self.props.data.NetMarginGrowthRates.length-1);
+	    	netMarginGrowthRateAvg=netMarginGrowthRateAvg/self.props.data.NetMarginGrowthRates.length;
 	    }
 	    netMarginGrowthRateAvg=netMarginGrowthRateAvg.toFixed(2);
 	    let boundaryInvestRetributionGateAvg = Math.abs(netMarginGrowthRateAvg/this.investRetributionGateAvg);
@@ -169,14 +169,18 @@ class growthefficiency extends Component{
     	let financingRatioAvg = 0;
     	if (this.props.data.FinancingAmounts) {
     		let self = this;
+    		let count = 0;
     		this.props.data.FinancingAmounts.forEach(function(financingAmount,index){
-    			let netAsset = self.props.data.NetAssets[index];
-    			financingRatioAvg += financingAmount/netAsset;
+    			if(financingAmount>0){
+    				count++;
+    				let netAsset = self.props.data.NetAssets[index];
+    				financingRatioAvg += financingAmount/netAsset;
+    			}
 	    	});
-	    	financingRatioAvg=financingRatioAvg/(self.props.data.FinancingAmounts.length-1);
+	    	financingRatioAvg=financingRatioAvg/count;
 	    }
 	    financingRatioAvg=financingRatioAvg.toFixed(2);
-	    return financingRatioAvg
+	    return financingRatioAvg*100
     }
 
 
@@ -192,6 +196,7 @@ class growthefficiency extends Component{
         rangeIndex = Common.getRange(this.boundaryInvestRetributionGateRange, this.boundaryInvestRetributionGateAvg);
         content += "。边际投入资本回报率"+this.boundaryInvestRetributionGateAvg+"%，处于"+this.boundaryInvestRetributionGateRange[rangeIndex].name+"区间，"+this.boundaryInvestRetributionGateRange[rangeIndex].des;
         this.score+=this.boundaryInvestRetributionGateRange[rangeIndex].score;
+        let convertScore = Common.convertToPercent(this.score,this.weight,2);
         rangeIndex = Common.getRange(this.financingRatioRange, this.getFinancingRatioAvg());
         let financingTxt = "没有筹资行为"
         if(this.props.data.InvestCount>0){
@@ -203,7 +208,7 @@ class growthefficiency extends Component{
                 <div className="ui container">
                     <img src={quotes} className="symbol" alt="" />
                     <div className="analysis-title">增长效率解析:<br />{content}</div>
-                    <div className="analysis-score">评分:<span className="analysis-score-v">{this.score}</span><span className="analysis-score-a">分</span></div>
+                    <div className="analysis-score">评分:<span className="analysis-score-v">{convertScore}</span><span className="analysis-score-a">分</span></div>
                 </div>
             </div>
         );
@@ -213,11 +218,12 @@ class growthefficiency extends Component{
 		let renderChart = this.renderChart();
 		let description = this.description();
 		let analysisResult = this.renderAnalysis();
-		this.props.onCollectInfo(this.score,Common.convertToPercent(this.score,this.weight,2));
+		let convertScore = Common.convertToPercent(this.score,this.weight,2);
+		this.props.onCollectInfo(this.score,convertScore);
 		return (
             <div className="bg-color-white">
                 <div className="ui container">
-					<TabScore name="增长效率" value={this.score} type="growthefficiency" />
+					<TabScore name="增长效率" value={convertScore} type="growthefficiency" />
 					<div className="charts-size">
 					   {renderChart}
                     </div>

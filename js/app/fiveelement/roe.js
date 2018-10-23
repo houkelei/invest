@@ -18,7 +18,7 @@ class roe extends Component{
 
 	constructor(props){
 		super(props);
-		this.weight = 20;
+		this.weight = this.props.data.Weights[3];
 		this.score = 0;
 		this.initialRoeAvg2 = 0;
 		this.assessDes = "";
@@ -32,7 +32,8 @@ class roe extends Component{
 		let config = {
             chart: {
                 height:360,
-				type: 'line'
+				type: 'line',
+				backgroundColor: 'rgba(0,0,0,0)',
 			},
 			title: {
 				text: ''
@@ -147,19 +148,20 @@ class roe extends Component{
         rangeIndex = rangeIndexA===rangeIndexB?rangeIndexA:rangeIndexB;
         this.score += this.volatilityRateRange[rangeIndex].score*this.weights[1]/100;
         this.score = parseFloat(this.score.toFixed(1));
+        let convertScore = Common.convertToPercent(this.score,this.weight,2);
         if(rangeIndexA===rangeIndexB){
         	content += "！ROE保持"+this.volatilityRateRange[rangeIndex].name
        	}else{
        		content += "！ROE由"+this.volatilityRateRange[rangeIndexA].name+"切换为"+this.volatilityRateRange[rangeIndexB].name
         }
         content += "，"+this.volatilityRateRange[rangeIndex].des
-        content += "。我们给予"+this.score+"分的加权评分。"
+        content += "。我们给予"+convertScore+"分的评分。"
         return (
             <div className="analysis-bar" style={{backgroundImage:"url("+blueBar+")"}}>
                 <div className="ui container">
                     <img src={quotes} className="analysis-symbol" alt="" />
                     <div className="analysis-title">ROE解析:<br />{content}</div>
-                    <div className="analysis-score">评分:<span className="analysis-score-v">{this.score}</span><span className="analysis-score-a">分</span></div>
+                    <div className="analysis-score">评分:<span className="analysis-score-v">{convertScore}</span><span className="analysis-score-a">分</span></div>
                 </div>
             </div>
         );
@@ -169,11 +171,12 @@ class roe extends Component{
         this.assessDes = "";
 		let renderChart = this.renderChart();
 		let analysisResult = this.renderAnalysis();
-		this.props.onCollectInfo(this.score,Common.convertToPercent(this.score,this.weight,2),{initialRoeAvg2:this.initialRoeAvg2,des_roe:this.assessDes});
+		let convertScore = Common.convertToPercent(this.score,this.weight,2);
+		this.props.onCollectInfo(this.score,convertScore,{initialRoeAvg2:this.initialRoeAvg2,des_roe:this.assessDes});
 		return (
             <div className="bg-color-green">
                 <div className="ui container">
-					<TabScore name="ROE" value={this.score} type="roe" />
+					<TabScore name="ROE" value={convertScore} type="roe" />
 					<div className="charts-size">
 					   {renderChart}
                     </div>
